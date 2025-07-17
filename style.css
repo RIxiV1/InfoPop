@@ -1,0 +1,50 @@
+/* InfoPop in-page popup styles */
+#infopop {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(30, 30, 30, 0.88);
+  color: #f2f2f2;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 320px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: translateY(-12px) scale(0.96);
+}
+
+#infopop.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+#infopop .word {
+  font-weight: 700;
+  color: #818cf8;
+  margin-bottom: 4px;
+}
+
+#infopop .def.error {
+  color: #f87171;
+}
+
+#infopop .close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: #a1a1aa;
+}
+
+#infopop .close:hover {
+  color: #f2f2f2;
+}
