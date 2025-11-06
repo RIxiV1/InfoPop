@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>InfoPop</title>
+  <title>InfoBlend</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -29,17 +29,121 @@
 </head>
 <body>
   <div class="card">
-    <div class="logo">📘 InfoPop</div>
-    <div class="desc">Highlight any word on any page to get an instant definition.</div>
+    <div class="logo">📘 InfoBlend</div>
+    <div class="desc">SMARTER BROWSING LESS CLICKING.</div>
     <div class="footer">Powered by <a href="https://dictionaryapi.dev" target="_blank">Free Dictionary API</a></div>
     <div class="toggle-row">
       <input type="checkbox" id="toggleSwitch">
-      <label for="toggleSwitch">Enable InfoPop</label>
+      <label for="toggleSwitch">Enable InfoBlend</label>
     </div>
+    <div style="margin-top:12px; text-align:left; font-size:13px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600;">API Provider</label>
+      <select id="apiProvider" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <option value="dictionaryapi">Free Dictionary (no key)</option>
+        <option value="custom">Custom API Template</option>
+      </select>
+
+      <label style="display:block; margin-top:8px; margin-bottom:6px; font-weight:600;">API Template (use {query})</label>
+      <input id="apiTemplate" type="text" placeholder="https://api.example.com/lookup?q={query}" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+
+      <label style="display:block; margin-top:8px; margin-bottom:6px; font-weight:600;">API Key (optional)</label>
+      <input id="apiKey" type="text" placeholder="your-api-key" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+
+      <label style="display:block; margin-top:8px; margin-bottom:6px; font-weight:600;">API Key Header (optional)</label>
+      <input id="apiKeyHeader" type="text" placeholder="e.g. x-api-key or Authorization" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button id="test-ai-endpoint" type="button" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:#eef2ff; cursor:pointer;">Test Endpoint</button>
+      </div>
+
+      <div style="font-size:12px; color:var(--muted); margin-top:8px;">Tip: Use <code>{query}</code> in the template where the selected text should be substituted. If you provide an API key, the popup will send it in the header you specify (or in <code>x-api-key</code> / <code>Authorization: Bearer</code> as fallback).</div>
+    </div>
+
+      <div style="margin-top:12px; text-align:left; font-size:13px;">
+        <label style="display:block; margin-bottom:6px; font-weight:600;">Get API keys</label>
+        <div style="font-size:12px; color:var(--muted);">
+          For better sentence or word coverage consider signing up for a more capable dictionary or words API. Some options:
+          <ul style="margin-top:6px; margin-left:18px;">
+            <li><a href="https://dictionaryapi.dev/" target="_blank">Free Dictionary API</a> — free, no key (good for single words)</li>
+            <li><a href="https://www.wordsapi.com/" target="_blank">WordsAPI (RapidAPI)</a> — commercial, richer results</li>
+            <li><a href="https://developer.oxforddictionaries.com/" target="_blank">Oxford Dictionaries</a> — commercial, high quality</li>
+            <li><a href="https://www.dictionaryapi.com/" target="_blank">Merriam-Webster</a> — commercial, reliable</li>
+          </ul>
+        </div>
+      </div>
+
+    <div style="margin-top:12px; text-align:left; font-size:13px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600;">Trigger</label>
+      <select id="triggerMode" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <option value="auto">On selection (automatic)</option>
+        <option value="modifier">Require modifier key</option>
+      </select>
+
+      <label style="display:block; margin-top:8px; margin-bottom:6px; font-weight:600;">Modifier Key</label>
+      <select id="modifierKey" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <option value="Alt">Alt</option>
+        <option value="Ctrl">Ctrl</option>
+        <option value="Shift">Shift</option>
+        <option value="Meta">Meta</option>
+      </select>
+    </div>
+
+    <!-- Distraction Hider -->
+    <div style="margin-top:12px; text-align:left; font-size:13px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600;">Distraction Hider</label>
+      <button id="select-to-hide" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer;">Select Element to Hide</button>
+
+      <div id="hidden-elements-list-container" style="margin-top:8px; font-size:13px; color:var(--muted);"></div>
+    </div>
+
+    <!-- Auto-fill Frequent Form Data -->
+    <div style="margin-top:12px; text-align:left; font-size:13px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600;">Auto-fill Profiles</label>
+      <div style="display:flex; gap:6px; margin-bottom:6px;">
+        <input id="profile-name" type="text" placeholder="Profile name" style="flex:1; padding:6px; border-radius:6px; border:1px solid var(--border);">
+      </div>
+      <input id="profile-fullname" type="text" placeholder="Full name" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); margin-top:6px;">
+      <input id="profile-email" type="email" placeholder="Email" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); margin-top:6px;">
+      <input id="profile-phone" type="text" placeholder="Phone" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); margin-top:6px;">
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button id="save-profile" type="button" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer;">Save Profile</button>
+        <button id="apply-profile-current" type="button" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:#eef2ff; cursor:pointer;">Apply to Page</button>
+      </div>
+      <div id="profiles-list" style="margin-top:8px; font-size:13px; color:var(--muted);"></div>
+    </div>
+
+    <!-- Highlight Important UI Elements -->
+    <div style="margin-top:12px; text-align:left; font-size:13px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600;">Highlight Rules</label>
+      <input id="highlight-selector" type="text" placeholder="CSS selector (e.g. .cta, #subscribe)" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+      <input id="highlight-color" type="color" value="#ffea00" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border); margin-top:6px;">
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button id="add-highlight" type="button" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer;">Add Highlight</button>
+        <button id="apply-highlights" type="button" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:#eef2ff; cursor:pointer;">Apply on Page</button>
+      </div>
+      <div id="highlights-list" style="margin-top:8px; font-size:13px; color:var(--muted);"></div>
+    </div>
+
     <div id="status"></div>
   </div>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Quick Access Buttons UI -->
+  <div style="padding:12px; max-width:260px;">
+    <label style="display:block; margin-top:12px; margin-bottom:6px; font-weight:600; font-size:13px;">Quick Access Buttons</label>
+    <div style="text-align:left;">
+      <form id="quick-button-form" style="display:flex; flex-direction:column; gap:6px;">
+        <input id="btn-label" type="text" placeholder="Button Label" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <input id="btn-action-target" type="text" placeholder="URL or CSS Selector" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+        <select id="btn-action-type" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border);">
+          <option value="url">Go to URL</option>
+          <option value="click">Click Element</option>
+        </select>
+        <button type="button" id="add-quick-button" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer;">Add Quick Button</button>
+      </form>
+      <div id="quick-buttons-list-container" style="margin-top:8px; font-size:13px; color:var(--muted);"></div>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
