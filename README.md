@@ -73,4 +73,3 @@ infoblend-ai/
 - **host_permissions**: Required to fetch data from the Dictionary and Wikipedia APIs.
 
 ---
-Built with ❤️ by InfoBlend AI Team.
