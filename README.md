@@ -118,14 +118,6 @@ InfoBlend processes all data locally in the browser.
 - No external data storage
 - No user data collection
 
-## Future Improvements
-
-- AI-powered summarization
-- Better article extraction
-- Custom ad-blocking rules
-- Support for multiple languages
-- Chrome Web Store release
-
 ## License
 
 MIT License
